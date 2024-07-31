@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css"
+    >
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">Homepage</a>
+    </div>
+</nav>
+<section class="hero m-auto">
+    <div class="is-fullwidth planeHeader">
+        <iframe style="width: 100%; height: 90%" src="/plane/plane.html" frameborder="0"></iframe>
+    </div>
+    <div class="is-fullwidth is-fullheight">
+        <div class="avatarAndFollow">
+            <figure class="WidthHeight256x256 profileImage">
+                <img src="/img/avatar1.png" class="borderWhite WidthHeight256x256" id="spinImage" alt="">
+            </figure>
+
+                <button class="button is-medium is-link followMe">Follow </button>
+        </div>
+        <div class="descriptionBox">
+            <h1 class="title is-1 nameTitle">Hoai Nam Le</h1>
+            <p class="subtitle is-4">Turning coffee into code and dreams into reality! ☕💻✨<br> Computer Science @ <a
+                    href="https://www.haw-hamburg.de/">HAW Hamburg</a>, ex-Software Developer @
+                <a class="is-link" href="https://cgrd.de">cgrd GmbH</a></p>
+            <div>
+                <svg fill="currentColor" class="w-5 h-5" viewBox="0 0 24 24" role="img"><title>Twitter icon</title>
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path>
+                </svg>
+                <span>@Namleyy</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                          d="M19.902 4.098a3.75 3.75 0 00-5.304 0l-4.5 4.5a3.75 3.75 0 001.035 6.037.75.75 0 01-.646 1.353 5.25 5.25 0 01-1.449-8.45l4.5-4.5a5.25 5.25 0 117.424 7.424l-1.757 1.757a.75.75 0 11-1.06-1.06l1.757-1.757a3.75 3.75 0 000-5.304zm-7.389 4.267a.75.75 0 011-.353 5.25 5.25 0 011.449 8.45l-4.5 4.5a5.25 5.25 0 11-7.424-7.424l1.757-1.757a.75.75 0 111.06 1.06l-1.757 1.757a3.75 3.75 0 105.304 5.304l4.5-4.5a3.75 3.75 0 00-1.035-6.037.75.75 0 01-.354-1z"
+                          clip-rule="evenodd"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const image = document.getElementById('spinImage');
+
+        image.addEventListener('click', () => {
+            image.classList.add('spin');
+            setTimeout(() => {
+                if (image.src.includes("avatar1")) {
+                    image.src = '/img/avatar2.JPG'
+                } else{
+                    image.src = '/img/avatar1.png';
+                }
+            },500);
+        });
+
+
+        image.addEventListener('animationend', () => {
+            image.classList.remove('spin');
+        });
+    });
+
+
+</script>
+</html>
