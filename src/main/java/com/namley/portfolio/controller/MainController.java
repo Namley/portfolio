@@ -1,5 +1,6 @@
 package com.namley.portfolio.controller;
 
+import com.namley.portfolio.model.Post;
 import jdk.jshell.spi.ExecutionControl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,14 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MainController {
 
     @GetMapping("")
-    public String index(@RequestParam(name = "name",required = false,defaultValue = "World") String name, Model model)
+    public String index(Post post, Model model)
     {
-        model.addAttribute("name",name);
+        model.addAttribute("post",post);
         return "index";
-    }
-
-    @PostMapping("/posts")
-    public String createPost(@PostMapping)
-    {
     }
 }
