@@ -1,70 +1,38 @@
 package com.namley.portfolio.model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.*;
+import org.antlr.v4.runtime.misc.NotNull;
+
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 
+@Getter
+@Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Post {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String username = "Namley";
     private String content;
-    private String timestamp;
+    private Instant createdAt;
     private String imagePath;
-    public Post(String username, String content, String timestamp, String imagePath) {
-        this.username = username;
-        this.content = content;
-        this.timestamp = timestamp;
-        this.imagePath = imagePath;
-    }
 
-    protected Post() {
+    public String getCreatedAtTimeZone() {
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(createdAt, ZonedDateTime.now().getZone());
 
-    }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a · d. MMM. yyyy", java.util.Locale.ENGLISH).withZone(ZonedDateTime.now().getZone());
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+        return formatter.format(zonedDateTime);
     }
 }
-

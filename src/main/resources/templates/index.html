@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css"/>
     <meta charset="UTF-8">
     <title>Title</title>
     <link
@@ -13,10 +14,14 @@
 <body>
 <nav class="navbar">
     <div class="navbar-brand">
-        <a class="navbar-item" href="/">Homepage</a>
+        <a class="navbar-item" href="/">Home</a>
         <button class="button">Login</button>
     </div>
 </nav>
+<div th:if="${message}" class="notification is-danger is-light">
+    <button class="delete"></button>
+    <strong>Oh no!</strong> Your post must contain either text or an image.
+</div>
 <section class="hero m-auto">
     <div class="is-fullwidth planeHeader">
         <iframe style="width: 100%; height: 90%" src="/plane/plane.html" id="planeFrame"></iframe>
@@ -48,7 +53,15 @@
             </h1>
             <p class="subtitle is-4">Turning coffee into code and dreams into reality!✨<br> Computer Science @ <a
                     href="https://www.haw-hamburg.de/">HAW Hamburg</a>, ex-Software Developer @
-                <a class="is-link" href="https://cgrd.de">cgrd GmbH</a></p>
+                <a class="is-link" href="https://cgrd.de">cgrd GmbH</a>
+            <div style="margin-top: 24px;width: auto">
+                <iframe style="border-radius:12px"
+                        src="https://open.spotify.com/embed/track/016z46SJwcRosW9Xb8JKmF?utm_source=generator&theme=0"
+                        width="450px" height="80" frameBorder="0" allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"></iframe>
+            </div>
+            </p>
             <span class="flex-links">
                 <span class="flex-items">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor"
@@ -82,56 +95,78 @@
                 </span>
             </span>
         </div>
+
         <div class="p-5 tabs is-large is-fullwidth">
             <ul>
-                <li class="is-active"><a>Pictures</a></li>
-                <li><a>Music</a></li>
-                <li><a>Videos</a></li>
-                <li><a>Documents</a></li>
+                <li id="posts-tab-button" class="is-active"><a>Posts</a></li>
+                <li id="musics-tab-button"><a>Music</a></li>
+                <li id="videos-tab-button"><a>Videos</a></li>
             </ul>
         </div>
     </div>
-    <div class="card is-center tweet">
+
+</section>
+<div id="posts-tab">
+    <div th:each="tweet: ${posts}" class="card is-center tweet">
         <div class="card-content">
             <div class="media">
                 <div class="media-left">
-                    <figure class="image is-48x48">
-                        <img
-                                src="https://bulma.io/assets/images/placeholders/96x96.png"
-                                alt="Placeholder image"
-                        />
+                    <figure class="WidthHeight48x48">
+                        <img src="/img/avatar1.png" class="WidthHeight48x48" style="border-radius: 9999px; object-fit: cover" id="spinImage2" alt="">
                     </figure>
                 </div>
                 <div class="media-content">
-                    <p class="title is-4">John Smith</p>
-                    <p class="subtitle is-6">@johnsmith</p>
+                    <p class="title is-4">Hoai Nam Le
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="verified-mini"
+                             viewBox="0 0 256 256" xml:space="preserve">
+                                            <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                                               transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                            <path d="M 30.091 10.131 L 30.091 10.131 c 5.28 -13.046 23.695 -13.207 29.202 -0.255 l 0 0 l 0 0 c 12.959 -5.491 26.093 7.416 20.829 20.469 l 0 0 l 0 0 c 13.046 5.28 13.207 23.695 0.255 29.202 l 0 0 l 0 0 c 5.491 12.959 -7.416 26.093 -20.469 20.829 l 0 0 l 0 0 c -5.28 13.046 -23.695 13.207 -29.202 0.255 l 0 0 l 0 0 C 17.748 86.122 4.613 73.215 9.878 60.162 l 0 0 l 0 0 C -3.169 54.881 -3.33 36.467 9.623 30.96 l 0 0 l 0 0 C 4.131 18.001 17.038 4.866 30.091 10.131 L 30.091 10.131 z"
+                                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,150,241); fill-rule: nonzero; opacity: 1;"
+                                  transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+                                                <polygon
+                                                        points="39.66,63.79 23.36,47.76 28.97,42.05 39.3,52.21 59.6,29.58 65.56,34.93 "
+                                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;"
+                                                        transform="  matrix(1 0 0 1 0 0) "/>
+                        </g>
+                </svg>
+                    </p>
+                    <p class="subtitle is-6" th:text="'@' + ${tweet.getUsername()}"></p>
                 </div>
             </div>
 
-            <div class="content">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
-                iaculis mauris. <a>@bulmaio</a>. <a href="#">#css</a>
-                <a href="#">#responsive</a>
+            <div class="content" style="white-space: pre-wrap" th:text="${tweet.getContent()}">
             </div>
-            <div class="card-image">
-                <figure class="image is-4by3 is-medium">
+            <time th:if="${tweet.getImagePath() == null}" th:datetime="${tweet.getCreatedAtTimeZone()}"
+                  th:text="${tweet.getCreatedAtTimeZone()}"></time>
+            <div th:if="${tweet.getImagePath()}" class="card-image">
+                <figure class="image is-medium">
                     <img
-                            src="https://bulma.io/assets/images/placeholders/1280x960.png"
-                            alt="Placeholder image"
+                            th:src="${tweet.getImagePath()}" style="object-fit: contain"
                     />
                 </figure>
                 <br/>
-                <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                <time th:datetime="${tweet.getCreatedAtTimeZone()}" th:text="${tweet.getCreatedAtTimeZone()}"></time>
             </div>
         </div>
     </div>
-</section>
+</div>
+<div id="musics-tab" style="margin: auto; max-width: 40%">
+    <iframe style="border-radius:12px"
+            src="https://open.spotify.com/embed/playlist/1hOFGkXq6hQBLUMBG190Uf?utm_source=generator" width="100%"
+            height="1000" frameBorder="0" allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+</div>
+<div id="videos-tab">
+    <h1 class="title">No videos available yet! Sorry🤞</h1>
+</div>
 
 
 <div class="modal" id="newPostModal">
     <div class="modal-background"></div>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data" th:action="@{/posts}" th:object="${post}">
         <div class="modal-content">
             <div class="modal-card">
                 <section class="modal-card-body">
@@ -139,10 +174,16 @@
                         <img src="/img/avatar1.png" style="width: 44px; height: 44px; border-radius: 9999px" alt="">
 
                         <span class="whatsNew">What's Happening?!</span>
-                        <div class="tweetArea" contenteditable="true" name="tweetText" data-contents="true">
-                        </div>
+                        <div class="tweetArea" contenteditable="true" name="tweetText" data-contents="true"></div>
+                        <input type="hidden" value="" id="contentText" th:field="*{content}" readonly>
                         <div>
-                            <button id="removeImage" hidden=""><svg viewBox="0 0 24 24" aria-hidden="true" fill="rgb(255, 255, 255)"><g><path d="M10.59 12L4.54 5.96l1.42-1.42L12 10.59l6.04-6.05 1.42 1.42L13.41 12l6.05 6.04-1.42 1.42L12 13.41l-6.04 6.05-1.42-1.42L10.59 12z"></path></g></svg></button>
+                            <button id="removeImage" hidden="">
+                                <svg viewBox="0 0 24 24" aria-hidden="true" fill="rgb(255, 255, 255)">
+                                    <g>
+                                        <path d="M10.59 12L4.54 5.96l1.42-1.42L12 10.59l6.04-6.05 1.42 1.42L13.41 12l6.05 6.04-1.42 1.42L12 13.41l-6.04 6.05-1.42-1.42L10.59 12z"></path>
+                                    </g>
+                                </svg>
+                            </button>
                             <img style="width: fit-content; height: fit-content" src="" id="uploadedImage">
                         </div>
                     </div>
@@ -150,7 +191,8 @@
                 <footer class="modal-card-foot flex">
                     <div class="media-left">
                         <div class="file button">
-                            <input class="file-input" type="file" accept="image/png, image/jpeg" name="imageUploader" id="imageUploader"/>
+                            <input class="file-input" type="file" accept="image/png, image/jpeg" name="imageUploader"
+                                   id="imageUploader"/>
                             <svg viewBox="0 0 24 24" aria-hidden="true"
                                  style="width: 36px; height:36px; fill: rgb(29, 155, 240);">
                                 <g>
@@ -160,7 +202,8 @@
                         </div>
                     </div>
                     <div class="buttons">
-                            <input class="button" style="background-color: rgb(29, 155, 240); color: white" type="submit" value="Post"></button>
+                        <input class="button" id="formSubmit" style="background-color: rgb(29, 155, 240); color: white"
+                               type="submit" value="Post"></button>
                     </div>
                 </footer>
             </div>
@@ -170,6 +213,50 @@
 </body>
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = {
+            posts: document.getElementById('posts-tab'),
+            musics: document.getElementById('musics-tab'),
+            videos: document.getElementById('videos-tab')
+        };
+
+        const tabButtons = {
+            posts: document.getElementById('posts-tab-button'),
+            musics: document.getElementById('musics-tab-button'),
+            videos: document.getElementById('videos-tab-button')
+        };
+
+        // Function to show the selected tab and hide the others
+        function switchTab(activeTab) {
+            // Loop through all the tabs and hide them
+            for (const tab in tabs) {
+                tabs[tab].style.display = 'none';  // Hide all tabs
+                tabButtons[tab].classList.remove('is-active');  // Remove the is-active class from all tab buttons
+            }
+            // Show the active tab
+            tabButtons[activeTab].classList.add('is-active');  // Show the selected tab
+            tabs[activeTab].style.display = 'block';  // Show the selected tab
+        }
+
+        // Add click event listeners to each tab button
+        tabButtons.posts.addEventListener('click', () => switchTab('posts'));
+        tabButtons.musics.addEventListener('click', () => switchTab('musics'));
+        tabButtons.videos.addEventListener('click', () => switchTab('videos'));
+
+        // Initially, only the posts tab is visible
+        switchTab('posts');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
     document.addEventListener('DOMContentLoaded', () => {
         fetch('/plane/plane.html')
             .then(response => response.text())
@@ -178,8 +265,14 @@
             });
     });
 
+    document.getElementById('formSubmit').addEventListener('click', event => {
+        document.getElementById('contentText').value = document.querySelector('.tweetArea').innerHTML;
+    });
+
+
     document.addEventListener('DOMContentLoaded', () => {
         const image = document.getElementById('spinImage');
+        const image2 = document.getElementById('spinImage2');
 
         image.addEventListener('click', () => {
             image.classList.add('spin');
@@ -196,23 +289,39 @@
         image.addEventListener('animationend', () => {
             image.classList.remove('spin');
         });
+
+        image2.addEventListener('click', () => {
+            image2.classList.add('spin');
+            setTimeout(() => {
+                if (image2.src.includes("avatar1")) {
+                    image2.src = '/img/avatar2.JPG'
+                } else {
+                    image2.src = '/img/avatar1.png';
+                }
+            }, 500);
+        });
+
+
+        image2.addEventListener('animationend', () => {
+            image2.classList.remove('spin');
+        });
     });
 
-    document.querySelector("#imageUploader").addEventListener("change",event=>{
+    document.querySelector("#imageUploader").addEventListener("change", event => {
         document.querySelector("#uploadedImage").src = URL.createObjectURL(event.target.files[0]);
         document.querySelector("#removeImage").hidden = false;
     })
 
-    document.querySelector("#removeImage").addEventListener("click",event=>{
+    document.querySelector("#removeImage").addEventListener("click", event => {
         document.getElementById('imageUploader').value = "";
         document.querySelector("#uploadedImage").src = "";
         document.querySelector("#removeImage").hidden = true;
 
     });
-    document.querySelector(".tweetArea").addEventListener("input",event=>{
+    document.querySelector(".tweetArea").addEventListener("input", event => {
         if (document.querySelector(".tweetArea").innerText !== "") {
             document.querySelector(".whatsNew").hidden = true;
-        } else{
+        } else {
             document.querySelector(".whatsNew").hidden = false;
         }
     });
