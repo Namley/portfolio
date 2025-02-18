@@ -15,12 +15,13 @@
 <nav class="navbar">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">Home</a>
-        <button class="button">Login</button>
+        <a class="navbar-item" href="/login">Login</a>
     </div>
 </nav>
 <div th:if="${message}" class="notification is-danger is-light">
     <button class="delete"></button>
-    <strong>Oh no!</strong> Your post must contain either text or an image.
+    <strong>Oh no!</strong>
+    <span th:text="${message}"></span>
 </div>
 <section class="hero m-auto">
     <div class="is-fullwidth planeHeader">
@@ -61,7 +62,6 @@
                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                         loading="lazy"></iframe>
             </div>
-            </p>
             <span class="flex-links">
                 <span class="flex-items">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor"
@@ -203,7 +203,7 @@
                     </div>
                     <div class="buttons">
                         <input class="button" id="formSubmit" style="background-color: rgb(29, 155, 240); color: white"
-                               type="submit" value="Post"></button>
+                               type="submit" value="Post">
                     </div>
                 </footer>
             </div>

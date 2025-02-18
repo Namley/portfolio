@@ -2,13 +2,10 @@ package com.namley.portfolio.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +23,15 @@ public class SecurityConfig {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/plane/*").permitAll();
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
                 })
-                .oauth2Login(withDefaults())
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error=true")
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                )
                 .build();
     }
 }

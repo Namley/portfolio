@@ -24,7 +24,8 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private static String IMAGES_FOLDER = "c:/Users/lehoa/Documents/uploaded-images/";
+    private static String UPLOADED_IMAGES_FOLDER = "/uploaded-images/";
+    private static String IMAGES_FOLDER = System.getProperty("user.dir") + "/src/main/resources/static" + UPLOADED_IMAGES_FOLDER;
     @PostMapping("/posts")
     public ResponseEntity<String> createTweet(@RequestParam("imageUploader") MultipartFile file, @ModelAttribute Post post, Model model, RedirectAttributes redirectAttributes) throws IOException {
         HttpHeaders headers = new HttpHeaders();
@@ -38,7 +39,7 @@ public class PostController {
                 byte[] bytes = file.getBytes();
                 Path path = Paths.get(IMAGES_FOLDER + file.getOriginalFilename());
 
-                post.setImagePath("/images/" + file.getOriginalFilename());
+                post.setImagePath(UPLOADED_IMAGES_FOLDER + file.getOriginalFilename());
                 // Save the file to the disk
                 Files.write(path, bytes);
 
