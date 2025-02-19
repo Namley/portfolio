@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css"
+    >
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <div class="box">
+                    <h1 class="title has-text-centered">Welcome Back</h1>
+
+                    <!-- Flash Messages -->
+                    <div th:if="${message}" th:class="${'notification ' + (messageType ?: 'is-danger') + ' is-light'}">
+                        <button class="delete"></button>
+                        <span th:text="${message}"></span>
+                    </div>
+
+                    <!-- OAuth Login Buttons -->
+                    <div class="buttons are-medium is-flex is-flex-direction-column">
+                        <a href="/oauth2/authorization/github" class="button is-dark is-fullwidth mb-3">
+                                <span class="icon">
+                                    <i class="fab fa-github"></i>
+                                </span>
+                            <span>Continue with GitHub</span>
+                        </a>
+
+                        <a href="/oauth2/authorization/google" class="button is-info is-fullwidth mb-3">
+                                <span class="icon">
+                                    <i class="fab fa-google"></i>
+                                </span>
+                            <span>Continue with Google</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Handle notification close button
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+</script>
+</body>
+</html>

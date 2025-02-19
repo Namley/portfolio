@@ -1,78 +1,113 @@
 package com.namley.portfolio.controller;
 
 import com.namley.portfolio.model.Post;
+import com.namley.portfolio.repository.PostRepository;
 import com.namley.portfolio.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private static String UPLOADED_IMAGES_FOLDER = "/uploaded-images/";
-    private static String IMAGES_FOLDER = System.getProperty("user.dir") + "/src/main/resources/static" + UPLOADED_IMAGES_FOLDER;
+    private final PostRepository postRepository;
+
+    @Value("${app.upload.dir:${user.dir}/src/main/resources/static/uploaded-images}")
+    private String uploadDir;
+
+    private static final List<String> ALLOWED_CONTENT_TYPES = Arrays.asList(
+            "image/jpeg",
+            "image/png",
+            "image/gif"
+    );
+
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+
+    @GetMapping("/posts/{id}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws ClassNotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(ClassNotFoundException::new);
+        Path path = Paths.get(uploadDir);
+        Files.find(path)
+    }
+
     @PostMapping("/posts")
-    public ResponseEntity<String> createTweet(@RequestParam("imageUploader") MultipartFile file, @ModelAttribute Post post, Model model, RedirectAttributes redirectAttributes) throws IOException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-        headers.setLocation(URI.create("/"));
-        if (!file.isEmpty()) {
-            try {
-                // Get the file name and build the path where it will be stored
-                byte[] bytes = file.getBytes();
-                Path path = Paths.get(IMAGES_FOLDER + file.getOriginalFilename());
+    public String createTweet(@RequestParam("imageUploader") MultipartFile file,
+                              @ModelAttribute Post post,
+                              RedirectAttributes redirectAttributes) throws IOException {
 
-                post.setImagePath(UPLOADED_IMAGES_FOLDER + file.getOriginalFilename());
-                // Save the file to the disk
-                Files.write(path, bytes);
-
-                // Add success message and file URL to the model
-                redirectAttributes.addFlashAttribute("success", true);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                redirectAttributes.addFlashAttribute("message", "File upload failed.");
-            }
-        }
-        post.setCreatedAt(Instant.now());
         if (post.getContent().isEmpty() && file.isEmpty()) {
             redirectAttributes.addFlashAttribute("message", "Tweet cannot be empty.");
-            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+            return "redirect:/";
         }
+
+        if (!file.isEmpty()) {
+            // Validate file type
+            if (!ALLOWED_CONTENT_TYPES.contains(file.getContentType())) {
+                redirectAttributes.addFlashAttribute("message", "Only JPEG, PNG and GIF images are allowed.");
+                return "redirect:/";
+            }
+
+            // Validate file size
+            if (file.getSize() > MAX_FILE_SIZE) {
+                redirectAttributes.addFlashAttribute("message", "File size must be less than 5MB.");
+                return "redirect:/";
+            }
+
+            try {
+                // Create upload directory if it doesn't exist
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                // Generate unique filename
+                String originalFilename = file.getOriginalFilename();
+                assert originalFilename != null;
+                String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String filename = Instant.now().toEpochMilli() + fileExtension;
+                Path filePath = uploadPath.resolve(filename);
+
+                // Save file using NIO
+                Files.copy(file.getInputStream(), filePath);
+
+                // Set relative path in post
+                post.setImagePath("/uploaded-images/" + filename);
+
+            } catch (IOException e) {
+                redirectAttributes.addFlashAttribute("message",
+                        "Failed to upload image: " + e.getMessage());
+                return "redirect:/";
+            }
+        }
+
+        post.setCreatedAt(Instant.now());
         post.setContent(parseTweetHtml(post.getContent()));
-
         postService.saveTweet(post);
-        model.addAttribute("posts", postService.getAllTweets());
 
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        return "redirect:/";
     }
+
     private String parseTweetHtml(String html) {
-        // Step 1: Remove <br> tags entirely
-        html = html.replaceAll("(?i)<br\\s*/?>", "");  // Removes both <br> and <br/>
-
-        // Step 2: Remove opening <div> tags
-        html = html.replaceAll("(?i)<div[^>]*>", "");  // Removes opening <div> tags
-
-        // Step 3: Replace closing </div> tags with newline (\n)
-        html = html.replaceAll("(?i)</div\\s*>", "\n");  // Replaces closing </div> with newline
-
-        // Step 4: Trim any extra spaces or newlines at the start/end
+        if (html == null) return "";
+        html = html.replaceAll("(?i)<br\\s*/?>", "");
+        html = html.replaceAll("(?i)<div[^>]*>", "");
+        html = html.replaceAll("(?i)</div\\s*>", "\n");
         return html.trim();
     }
 }

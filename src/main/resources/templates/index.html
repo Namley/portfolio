@@ -30,7 +30,7 @@
     <div class="is-fullwidth is-fullheight">
         <div class="avatarAndFollow">
             <figure class="WidthHeight256x256 profileImage">
-                <img src="/img/avatar1.png" class="borderWhite WidthHeight256x256" id="spinImage" alt="">
+                <img src="/img/avatar2.JPG" class="borderWhite WidthHeight256x256" id="spinImage" alt="">
             </figure>
 
             <a class="button is-medium is-link followMe" href="https://www.linkedin.com/in/hoai-nam-le-63a847298/">Follow</a>
@@ -55,14 +55,7 @@
             <p class="subtitle is-4">Turning coffee into code and dreams into reality!✨<br> Computer Science @ <a
                     href="https://www.haw-hamburg.de/">HAW Hamburg</a>, ex-Software Developer @
                 <a class="is-link" href="https://cgrd.de">cgrd GmbH</a>
-            <div style="margin-top: 24px;width: auto">
-                <iframe style="border-radius:12px"
-                        src="https://open.spotify.com/embed/track/016z46SJwcRosW9Xb8JKmF?utm_source=generator&theme=0"
-                        width="450px" height="80" frameBorder="0" allowfullscreen=""
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                        loading="lazy"></iframe>
-            </div>
-            <span class="flex-links">
+            <span style="font-size: 18px; margin-top: 15px;" class="flex-links">
                 <span class="flex-items">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor"
                          viewBox="0 0 16 16">
@@ -112,7 +105,7 @@
             <div class="media">
                 <div class="media-left">
                     <figure class="WidthHeight48x48">
-                        <img src="/img/avatar1.png" class="WidthHeight48x48" style="border-radius: 9999px; object-fit: cover" id="spinImage2" alt="">
+                        <img src="/img/avatar1.jpg" class="WidthHeight48x48" style="border-radius: 9999px; object-fit: cover" id="spinImage2" alt="">
                     </figure>
                 </div>
                 <div class="media-content">
@@ -142,9 +135,8 @@
                   th:text="${tweet.getCreatedAtTimeZone()}"></time>
             <div th:if="${tweet.getImagePath()}" class="card-image">
                 <figure class="image is-medium">
-                    <img
-                            th:src="${tweet.getImagePath()}" style="object-fit: contain"
-                    />
+                    <div id="postID" style="display: none" th:text="${tweet.getId()}"></div>
+                    <img style="object-fit: contain"/>
                 </figure>
                 <br/>
                 <time th:datetime="${tweet.getCreatedAtTimeZone()}" th:text="${tweet.getCreatedAtTimeZone()}"></time>
@@ -214,6 +206,72 @@
 
 <script>
 
+    async function loadImages() {
+        // Get all image containers
+        const imageContainers = document.querySelectorAll('.image');
+
+        // Process each container
+        imageContainers.forEach(async (container) => {
+            try {
+                // Get the post ID from the hidden div
+                const postIdElement = container.querySelector('#postID');
+                if (!postIdElement) {
+                    console.error('Post ID element not found');
+                    return;
+                }
+
+                const postId = postIdElement.textContent.trim();
+
+                // Find the img element within this container
+                const imgElement = container.querySelector('img');
+                if (!imgElement) {
+                    console.error('Image element not found');
+                    return;
+                }
+
+                // Add loading state
+                imgElement.style.opacity = '0.5';
+
+                // Fetch image data from API
+                const response = await fetch(`/api/posts/${postId}/image`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.imagePath) {
+                    // Add cache-busting parameter to prevent caching issues
+                    const imageSrc = `${data.imagePath}?v=${new Date().getTime()}`;
+
+                    // Create a new Image object to handle loading
+                    const img = new Image();
+
+                    img.onload = () => {
+                        imgElement.src = imageSrc;
+                        imgElement.style.opacity = '1';
+                    };
+
+                    img.onerror = () => {
+                        console.error('Failed to load image');
+                        imgElement.style.opacity = '1';
+                    };
+
+                    img.src = imageSrc;
+                }
+            } catch (error) {
+                console.error('Error loading image:', error);
+                const imgElement = container.querySelector('img');
+                if (imgElement) {
+                    imgElement.style.opacity = '1';
+                }
+            }
+        });
+    }
+
+    // Call the function when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', loadImages);
     document.addEventListener('DOMContentLoaded', () => {
         const tabs = {
             posts: document.getElementById('posts-tab'),
@@ -280,7 +338,7 @@
                 if (image.src.includes("avatar1")) {
                     image.src = '/img/avatar2.JPG'
                 } else {
-                    image.src = '/img/avatar1.png';
+                    image.src = '/img/avatar1.jpg';
                 }
             }, 500);
         });

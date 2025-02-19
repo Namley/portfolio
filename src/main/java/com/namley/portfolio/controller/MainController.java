@@ -2,6 +2,7 @@ package com.namley.portfolio.controller;
 
 import com.namley.portfolio.model.Post;
 import com.namley.portfolio.service.PostService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
