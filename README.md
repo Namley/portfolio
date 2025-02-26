@@ -43,3 +43,8 @@ guest message system.
     spring.security.oauth2.client.registration.google.client-id=${CLIENT_ID_GOOGLE}
     spring.security.oauth2.client.registration.google.client-secret=${CLIENT_SECRET_GOOGLE}spring.datasource.username=${DATASOURCE_USERNAME}
     spring.datasource.password=${DATASOURCE_PASSWORD}
+
+## 📸 Screenshots
+
+![Pic1](screenshot1.png)
+![Pic2](screenshot2.png)
