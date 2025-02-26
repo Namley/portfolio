@@ -45,7 +45,7 @@ guest message system.
     spring.datasource.password=${DATASOURCE_PASSWORD}
 
 ## 📸 Screenshots
--- Index Page with no posts
+- Index Page with no posts
 ![Pic1](screenshot1.png)
--- Index Page with one example tweet
+- Index Page with one example tweet
 ![Pic2](screenshot2.png)
