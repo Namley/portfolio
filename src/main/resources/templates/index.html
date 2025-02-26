@@ -38,7 +38,7 @@
         </div>
         <div class="descriptionBox">
             <h1 class="title is-1 nameTitle">Hoai Nam Le
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="verified"
+                <svg xmlns="http://www.w3.org/2000/svg" class="verified"
                      viewBox="0 0 256 256" xml:space="preserve">
                                             <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
                                                transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
@@ -94,6 +94,7 @@
                 <li id="posts-tab-button" class="is-active"><a>Posts</a></li>
                 <li id="musics-tab-button"><a>Music</a></li>
                 <li id="videos-tab-button"><a>Videos</a></li>
+                <li id="messages-tab-button"><a>Leave a message</a></li>
             </ul>
         </div>
     </div>
@@ -129,14 +130,14 @@
                 </div>
             </div>
 
-            <div class="content" style="white-space: pre-wrap" th:text="${tweet.getContent()}">
+            <div class="content" style="font-size: 20px; white-space: pre-wrap" th:text="${tweet.getContent()}">
             </div>
             <time th:if="${tweet.getImagePath() == null}" th:datetime="${tweet.getCreatedAtTimeZone()}"
                   th:text="${tweet.getCreatedAtTimeZone()}"></time>
             <div th:if="${tweet.getImagePath()}" class="card-image">
                 <figure class="image is-medium">
                     <div id="postID" style="display: none" th:text="${tweet.getId()}"></div>
-                    <img style="object-fit: contain"/>
+                    <img th:src="${tweet.getImagePath()}" style="object-fit: contain"/>
                 </figure>
                 <br/>
                 <time th:datetime="${tweet.getCreatedAtTimeZone()}" th:text="${tweet.getCreatedAtTimeZone()}"></time>
@@ -144,14 +145,67 @@
         </div>
     </div>
 </div>
-<div id="musics-tab" style="margin: auto; max-width: 40%">
+<div id="musics-tab" style="margin: auto; max-width: 30%">
     <iframe style="border-radius:12px"
             src="https://open.spotify.com/embed/playlist/1hOFGkXq6hQBLUMBG190Uf?utm_source=generator" width="100%"
             height="1000" frameBorder="0" allowfullscreen=""
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 </div>
 <div id="videos-tab">
-    <h1 class="title">No videos available yet! Sorry🤞</h1>
+    <h1 class="title text-center">No videos available yet! Sorry🤞</h1>
+</div>
+<div id="messages-tab">
+    <h1 class="title text-center">Leave a message for me behind!!!</h1>
+    <div class="card tweet" style="align-content: center; margin: auto; max-width: 40%;">
+        <form method="post" th:action="@{/messages}" th:object="${userMessage}">
+            <label>
+                <textarea th:field="*{messageContent}"
+                          style="width: 100%; height: 100px; border-radius: 5px; padding: 10px; font-size: 16px; resize: none; background-color: #253341; color: white;"
+                          placeholder="What's happening?" maxlength="280"></textarea>
+            </label>
+            <button type="submit"
+                    style="width: 100%; padding: 10px; border: none; background-color: #1da1f2; color: white; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+                Sent A Message!!!
+            </button>
+        </form>
+    </div>
+
+    <div th:each="singleMessage: ${userMessages}" style="margin-top: 30px" class="card is-center tweet">
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <figure class="WidthHeight48x48">
+                        <img th:src="${singleMessage.getProfileImageUrl()}" class="WidthHeight48x48"
+                             style="border-radius: 9999px; object-fit: cover" id="spinImage3" alt="">
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <p class="title is-4" th:text="${singleMessage.getUsername()}">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="verified-mini"
+                             viewBox="0 0 256 256" xml:space="preserve">
+                                            <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                                               transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                            <path d="M 30.091 10.131 L 30.091 10.131 c 5.28 -13.046 23.695 -13.207 29.202 -0.255 l 0 0 l 0 0 c 12.959 -5.491 26.093 7.416 20.829 20.469 l 0 0 l 0 0 c 13.046 5.28 13.207 23.695 0.255 29.202 l 0 0 l 0 0 c 5.491 12.959 -7.416 26.093 -20.469 20.829 l 0 0 l 0 0 c -5.28 13.046 -23.695 13.207 -29.202 0.255 l 0 0 l 0 0 C 17.748 86.122 4.613 73.215 9.878 60.162 l 0 0 l 0 0 C -3.169 54.881 -3.33 36.467 9.623 30.96 l 0 0 l 0 0 C 4.131 18.001 17.038 4.866 30.091 10.131 L 30.091 10.131 z"
+                                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,150,241); fill-rule: nonzero; opacity: 1;"
+                                  transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+                                                <polygon
+                                                        points="39.66,63.79 23.36,47.76 28.97,42.05 39.3,52.21 59.6,29.58 65.56,34.93 "
+                                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;"
+                                                        transform="  matrix(1 0 0 1 0 0) "/>
+                        </g>
+                </svg>
+                    </p>
+                </div>
+            </div>
+
+            <div class="content" style="white-space: pre-wrap; font-size: 20px"
+                 th:text="${singleMessage.getMessageContent()}">
+            </div>
+            <time th:datetime="${singleMessage.getCreatedAtTimeZone()}"
+                  th:text="${singleMessage.getCreatedAtTimeZone()}"></time>
+        </div>
+    </div>
 </div>
 
 
@@ -163,7 +217,7 @@
             <div class="modal-card">
                 <section class="modal-card-body">
                     <div class="input-box">
-                        <img src="/img/avatar1.png" style="width: 44px; height: 44px; border-radius: 9999px" alt="">
+                        <img src="/img/avatar1.jpg" style="width: 44px; height: 44px; border-radius: 9999px" alt="">
 
                         <span class="whatsNew">What's Happening?!</span>
                         <div class="tweetArea" contenteditable="true" name="tweetText" data-contents="true"></div>
@@ -203,234 +257,5 @@
     </form>
 </div>
 </body>
-
-<script>
-
-    async function loadImages() {
-        // Get all image containers
-        const imageContainers = document.querySelectorAll('.image');
-
-        // Process each container
-        imageContainers.forEach(async (container) => {
-            try {
-                // Get the post ID from the hidden div
-                const postIdElement = container.querySelector('#postID');
-                if (!postIdElement) {
-                    console.error('Post ID element not found');
-                    return;
-                }
-
-                const postId = postIdElement.textContent.trim();
-
-                // Find the img element within this container
-                const imgElement = container.querySelector('img');
-                if (!imgElement) {
-                    console.error('Image element not found');
-                    return;
-                }
-
-                // Add loading state
-                imgElement.style.opacity = '0.5';
-
-                // Fetch image data from API
-                const response = await fetch(`/api/posts/${postId}/image`);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data.imagePath) {
-                    // Add cache-busting parameter to prevent caching issues
-                    const imageSrc = `${data.imagePath}?v=${new Date().getTime()}`;
-
-                    // Create a new Image object to handle loading
-                    const img = new Image();
-
-                    img.onload = () => {
-                        imgElement.src = imageSrc;
-                        imgElement.style.opacity = '1';
-                    };
-
-                    img.onerror = () => {
-                        console.error('Failed to load image');
-                        imgElement.style.opacity = '1';
-                    };
-
-                    img.src = imageSrc;
-                }
-            } catch (error) {
-                console.error('Error loading image:', error);
-                const imgElement = container.querySelector('img');
-                if (imgElement) {
-                    imgElement.style.opacity = '1';
-                }
-            }
-        });
-    }
-
-    // Call the function when the DOM is loaded
-    document.addEventListener('DOMContentLoaded', loadImages);
-    document.addEventListener('DOMContentLoaded', () => {
-        const tabs = {
-            posts: document.getElementById('posts-tab'),
-            musics: document.getElementById('musics-tab'),
-            videos: document.getElementById('videos-tab')
-        };
-
-        const tabButtons = {
-            posts: document.getElementById('posts-tab-button'),
-            musics: document.getElementById('musics-tab-button'),
-            videos: document.getElementById('videos-tab-button')
-        };
-
-        // Function to show the selected tab and hide the others
-        function switchTab(activeTab) {
-            // Loop through all the tabs and hide them
-            for (const tab in tabs) {
-                tabs[tab].style.display = 'none';  // Hide all tabs
-                tabButtons[tab].classList.remove('is-active');  // Remove the is-active class from all tab buttons
-            }
-            // Show the active tab
-            tabButtons[activeTab].classList.add('is-active');  // Show the selected tab
-            tabs[activeTab].style.display = 'block';  // Show the selected tab
-        }
-
-        // Add click event listeners to each tab button
-        tabButtons.posts.addEventListener('click', () => switchTab('posts'));
-        tabButtons.musics.addEventListener('click', () => switchTab('musics'));
-        tabButtons.videos.addEventListener('click', () => switchTab('videos'));
-
-        // Initially, only the posts tab is visible
-        switchTab('posts');
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
-            const $notification = $delete.parentNode;
-
-            $delete.addEventListener('click', () => {
-                $notification.parentNode.removeChild($notification);
-            });
-        });
-    });
-    document.addEventListener('DOMContentLoaded', () => {
-        fetch('/plane/plane.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementsByClassName('planeFrame').innerHTML = data;
-            });
-    });
-
-    document.getElementById('formSubmit').addEventListener('click', event => {
-        document.getElementById('contentText').value = document.querySelector('.tweetArea').innerHTML;
-    });
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const image = document.getElementById('spinImage');
-        const image2 = document.getElementById('spinImage2');
-
-        image.addEventListener('click', () => {
-            image.classList.add('spin');
-            setTimeout(() => {
-                if (image.src.includes("avatar1")) {
-                    image.src = '/img/avatar2.JPG'
-                } else {
-                    image.src = '/img/avatar1.jpg';
-                }
-            }, 500);
-        });
-
-
-        image.addEventListener('animationend', () => {
-            image.classList.remove('spin');
-        });
-
-        image2.addEventListener('click', () => {
-            image2.classList.add('spin');
-            setTimeout(() => {
-                if (image2.src.includes("avatar1")) {
-                    image2.src = '/img/avatar2.JPG'
-                } else {
-                    image2.src = '/img/avatar1.png';
-                }
-            }, 500);
-        });
-
-
-        image2.addEventListener('animationend', () => {
-            image2.classList.remove('spin');
-        });
-    });
-
-    document.querySelector("#imageUploader").addEventListener("change", event => {
-        document.querySelector("#uploadedImage").src = URL.createObjectURL(event.target.files[0]);
-        document.querySelector("#removeImage").hidden = false;
-    })
-
-    document.querySelector("#removeImage").addEventListener("click", event => {
-        document.getElementById('imageUploader').value = "";
-        document.querySelector("#uploadedImage").src = "";
-        document.querySelector("#removeImage").hidden = true;
-
-    });
-    document.querySelector(".tweetArea").addEventListener("input", event => {
-        if (document.querySelector(".tweetArea").innerText !== "") {
-            document.querySelector(".whatsNew").hidden = true;
-        } else {
-            document.querySelector(".whatsNew").hidden = false;
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Functions to open and close a modal
-        function openModal($el) {
-            $el.classList.add('is-active');
-        }
-
-        function closeModal($el) {
-            document.querySelector(".tweetArea").innerText = "";
-            document.getElementById('imageUploader').value = "";
-            document.querySelector("#uploadedImage").src = "";
-            document.querySelector(".whatsNew").hidden = false;
-
-            $el.classList.remove('is-active');
-        }
-
-        function closeAllModals() {
-            (document.querySelectorAll('.modal') || []).forEach(($modal) => {
-                closeModal($modal);
-            });
-        }
-
-        // Add a click event on buttons to open a specific modal
-        (document.querySelectorAll('.postModalTrigger') || []).forEach(($trigger) => {
-            const modal = $trigger.dataset.target;
-            const $target = document.getElementById(modal);
-
-            $trigger.addEventListener('click', () => {
-                openModal($target);
-            });
-        });
-
-        // Add a click event on various child elements to close the parent modal
-        (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete') || []).forEach(($close) => {
-            const $target = $close.closest('.modal');
-
-            $close.addEventListener('click', () => {
-                closeModal($target);
-            });
-        });
-
-        // Add a keyboard event to close all modals
-        document.addEventListener('keydown', (event) => {
-            if (event.key === "Escape") {
-                closeAllModals();
-            }
-        });
-    });
-
-</script>
+<script type="text/javascript" th:src="@{/js/index.js}"></script>
 </html>
